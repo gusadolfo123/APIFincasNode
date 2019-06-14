@@ -1,0 +1,28 @@
+
+
+npm i express mongodb
+npm install --save-dev @babel/core @babel/cli @babel/preset-env
+npm install --save @babel/polyfill
+npm i @babel/node -> para solportar ECMA10++ En node
+npm i nodemon -D
+
+crear .babelrc 
+{
+	"presets": ["@babel/preset-env"]
+}
+
+crear script en package.json
+{
+    "build": "babel src --out-dir dist",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.js --exec babel-node"
+}
+
+en el index.js agregar
+import "@babel/polyfill";
+
+
+
+
+
+
