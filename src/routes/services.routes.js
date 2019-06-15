@@ -1,27 +1,28 @@
 import { Router } from 'express';
 import { connect } from '../database';
-import { Farm } from '../models/farm';
+import { Service } from '../models/service';
+
 const router = Router();
 
-// index
+// getAll
 router.get('/', async (req, res) => {
 	const db = await connect();
-	const result = await db
-		.collection('farms')
+	const services = await db
+		.collection('services')
 		.find({})
 		.toArray();
-	res.json(result);
+	res.json(services);
 });
 
 // create
 router.post('/', async (req, res) => {
 	try {
 		const db = await connect();
-		let farm = new Farm(req.body);
-		await db.collection('farms').insertOne(farm);
-		res.json(farm);
+		let service = new Service(req.body);
+		await db.collection('services').insertOne(service);
+		res.json(service);
 	} catch (error) {
-		res.json(error);
+		throw new Error(`Error en metodo create ${error}`);
 	}
 });
 

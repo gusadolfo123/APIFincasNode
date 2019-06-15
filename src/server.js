@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import IndexRoutes from './routes/index.routes';
 import FarmRoutes from './routes/farms.routes';
+import ServiceRouter from './routes/services.routes';
 
 const app = express();
 
@@ -13,5 +14,6 @@ app.use(express.json()); // para capturar datos que se envian en el cuerpo de un
 //Routes
 app.use(IndexRoutes);
 app.use('/farms', FarmRoutes);
+app.use('/services', ServiceRouter);
 
 export default app;
