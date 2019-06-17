@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import farmController from '../controllers/farm.controller';
+import mockData from '../helpers/mock-data';
 const router = Router();
 
 // index
@@ -19,5 +20,7 @@ router.post('/getBy', farmController.getBy);
 
 // get per page
 router.post('/getPerPage/:page?', farmController.getFarmsPerPage);
+
+router.get('/generateMockData', mockData.generateFarms);
 
 export default router;

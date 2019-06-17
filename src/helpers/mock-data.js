@@ -3,12 +3,24 @@ import { Farm } from '../models/farm';
 import { Service } from '../models/service';
 import { connect } from '../database';
 
-const fakerFarms = {};
+const mockData = {};
 
-fakerFarms.generateFarms = async () => {
-	let services = [];
+mockData.generateFarms = async (req, res) => {
+	let listServices = [];
 	let farms = [];
 	const db = await connect();
+
+	// services
+	for (let index = 0; index < 5; index++) {
+		const newService = new Service({
+			name: faker.company.companyName(),
+			description: faker.lorem.words(5),
+			icon: 'fas fa-futbol',
+		});
+		listServices.push(newService);
+	}
+
+	db.collection('services').insertMany(listServices);
 
 	for (let index = 0; index < 10; index++) {
 		const newFarm = new Farm({
@@ -46,18 +58,7 @@ fakerFarms.generateFarms = async () => {
 					per_person: faker.commerce.price(180000, 350000, 2),
 				},
 			},
-			services: [
-				{
-					name: faker.name.jobArea(),
-					description: faker.name.jobDescriptor(),
-					icon: faker.internet.avatar.name,
-				},
-				{
-					name: faker.name.jobArea(),
-					description: faker.name.jobDescriptor(),
-					icon: faker.internet.avatar.name,
-				},
-			],
+			services: [listServices[0]._id.toString(), listServices[1]._id.toString()],
 			terms_conditions: [
 				faker.random.words(5),
 				faker.random.words(5),
@@ -69,7 +70,7 @@ fakerFarms.generateFarms = async () => {
 		farms.push(newFarm);
 	}
 	await db.collection('farms').insertMany(farms);
-	return farms;
+	res.status(200).json(farms);
 };
 
-export default fakerFarms;
+export default mockData;
