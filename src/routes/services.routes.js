@@ -1,29 +1,21 @@
 import { Router } from 'express';
-import { connect } from '../database';
-import { Service } from '../models/service';
+import serviceController from '../controllers/service.controller';
 
 const router = Router();
 
 // getAll
-router.get('/', async (req, res) => {
-	const db = await connect();
-	const services = await db
-		.collection('services')
-		.find({})
-		.toArray();
-	res.json(services);
-});
+router.get('/', serviceController.getAll);
 
 // create
-router.post('/', async (req, res) => {
-	try {
-		const db = await connect();
-		let service = new Service(req.body);
-		await db.collection('services').insertOne(service);
-		res.json(service);
-	} catch (error) {
-		throw new Error(`Error en metodo create ${error}`);
-	}
-});
+router.post('/', serviceController.createOne);
+
+// update
+router.put('/:id', serviceController.update);
+
+// delete
+router.delete('/:id', serviceController.deleteOne);
+
+// get per page
+router.post('/getPerPage/:page?', serviceController.getServicesPerPage);
 
 export default router;

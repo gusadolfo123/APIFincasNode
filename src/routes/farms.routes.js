@@ -1,28 +1,23 @@
 import { Router } from 'express';
-import { connect } from '../database';
-import { Farm } from '../models/farm';
+import farmController from '../controllers/farm.controller';
 const router = Router();
 
 // index
-router.get('/', async (req, res) => {
-	const db = await connect();
-	const result = await db
-		.collection('farms')
-		.find({})
-		.toArray();
-	res.json(result);
-});
+router.get('/', farmController.getAll);
 
 // create
-router.post('/', async (req, res) => {
-	try {
-		const db = await connect();
-		let farm = new Farm(req.body);
-		await db.collection('farms').insertOne(farm);
-		res.json(farm);
-	} catch (error) {
-		res.json(error);
-	}
-});
+router.post('/', farmController.createOne);
+
+// update
+router.put('/:id', farmController.update);
+
+// delete
+router.delete('/:id', farmController.deleteOne);
+
+// get by filter
+router.post('/getBy', farmController.getBy);
+
+// get per page
+router.post('/getPerPage/:page?', farmController.getFarmsPerPage);
 
 export default router;

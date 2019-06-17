@@ -6,7 +6,7 @@ export async function connect() {
 			useNewUrlParser: true,
 		});
 		const db = client.db('alquiler');
-		console.log(`Db is Connected`);
+		console.log(`DB is Connected`);
 		return db;
 	} catch (error) {
 		throw new Error(`Error al intentar conectar con la base de datos: ${error}`);
