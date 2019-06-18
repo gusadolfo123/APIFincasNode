@@ -1,6 +1,7 @@
 import express, { json, urlencoded } from 'express';
 import FarmRoutes from './routes/farms.routes';
 import ServiceRouter from './routes/services.routes';
+import SeasonRouter from "./routes/season.routes";
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use(json()); // para capturar datos que se envian en el cuerpo de un request
 
 //Routes
 app.use('/api/farms', FarmRoutes);
+app.use('/api/seasons', SeasonRouter);
 app.use('/api/services', ServiceRouter);
+
 
 export default app;
