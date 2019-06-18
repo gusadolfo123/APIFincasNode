@@ -35,5 +35,6 @@ userController.update = async (req, res) => {
 	res.json(user);
 };
 
-// userController.delete
+// userController.delete pendiente
+
 export default userController;

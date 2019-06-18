@@ -3,6 +3,7 @@ import FarmRoutes from './routes/farms.routes';
 import ServiceRouter from './routes/services.routes';
 import SeasonRouter from './routes/season.routes';
 import UserRouter from './routes/user.routes';
+import CompanyRouter from './routes/company.routes';
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use('/api/farms', FarmRoutes);
 app.use('/api/seasons', SeasonRouter);
 app.use('/api/services', ServiceRouter);
 app.use('/api/users', UserRouter);
+app.use('/api/companies', CompanyRouter);
 
 export default app;
