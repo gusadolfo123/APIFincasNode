@@ -1,5 +1,5 @@
 import { connect } from '../database';
-import { Season } from '../models/season';
+import { Seasons } from '../models/seasons';
 import { ObjectId } from 'mongodb';
 
 const seasonController = {};
@@ -15,7 +15,7 @@ seasonController.getAll = async (req, res) => {
 
 seasonController.createSeason = async (req, res) => {
 	const db = await connect();
-	let season = new Season(req.body);
+	let season = new Seasons(req.body);
 	await db.collection('seasons').insertOne(season);
 	res.status(201).json(season);
 };
@@ -23,7 +23,7 @@ seasonController.createSeason = async (req, res) => {
 seasonController.updateSeason = async (req, res) => {
 	const db = await connect();
 	const { id } = req.params;
-	let season = new Season(req.body);
+	let season = new Seasons(req.body);
 	const seasons = await db.collection('seasons').updateOne({ _id: new ObjectId(id) }, { $set: season });
 	res.status(200).json(`Grabacion correcta`);
 };
