@@ -1,6 +1,7 @@
 import faker from 'faker/locale/es_MX';
 import { Farm } from '../models/farm';
 import { Service } from '../models/service';
+import { Company } from "../models/company";
 import { connect } from '../database';
 
 const mockData = {};
@@ -9,6 +10,19 @@ mockData.generateFarms = async (req, res) => {
 	let listServices = [];
 	let farms = [];
 	const db = await connect();
+
+	// company
+	const company = new Company({
+		name: "AlquilamosFincas",
+		dir: "Cll Falsa 123",
+		coordinate: {
+			lat: 7.045465,
+			lon: 0.12165
+		},
+		phones: [
+			{}
+		]
+	});
 
 	// services
 	for (let index = 0; index < 5; index++) {
