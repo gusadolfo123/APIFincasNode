@@ -130,7 +130,7 @@ mockData.generateFarms = async (req, res) => {
 		hight: [faker.date.future(), faker.date.future(), faker.date.future(), faker.date.future(), faker.date.future(), faker.date.future()],
 	});
 
-	await db.collection('seasons').insertMany(seasons);
+	await db.collection('seasons').insertOne(seasons);
 
 	const result = {
 		company,
