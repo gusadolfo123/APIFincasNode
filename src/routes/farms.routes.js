@@ -3,24 +3,12 @@ import farmController from '../controllers/farm.controller';
 import mockData from '../helpers/mock-data';
 const router = Router();
 
-// index
 router.get('/', farmController.getAll);
-
-// create
 router.post('/', farmController.createOne);
-
-// update
 router.put('/:id', farmController.update);
-
-// delete
 router.delete('/:id', farmController.deleteOne);
-
-// get by filter
 router.post('/getBy', farmController.getBy);
-
-// get per page
 router.post('/getPerPage/:page?', farmController.getFarmsPerPage);
-
 router.get('/generateMockData', mockData.generateFarms);
 
 export default router;
