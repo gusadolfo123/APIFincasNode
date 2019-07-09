@@ -1,6 +1,7 @@
 import faker from 'faker/locale/es_MX';
 import { Farm } from '../models/farm';
 import { Service } from '../models/service';
+import { Company } from "../models/company";
 import { connect } from '../database';
 import { Company } from '../models/company';
 import { Seasons } from '../models/seasons';
@@ -68,6 +69,7 @@ mockData.generateFarms = async (req, res) => {
 	});
 
 	await db.collection('companies').insertOne(company);
+
 
 	// services
 	for (let index = 0; index < 5; index++) {
