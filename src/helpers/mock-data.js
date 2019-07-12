@@ -10,6 +10,7 @@ const mockData = {};
 mockData.generateFarms = async (req, res) => {
 	let listServices = [];
 	let farms = [];
+
 	const db = await connect();
 
 	// seasons
@@ -48,30 +49,48 @@ mockData.generateFarms = async (req, res) => {
 		},
 		phones: [
 			{
-				phone_type: 'Celular',
+				phone_type: 'local',
 				number: faker.phone.phoneNumber(),
 			},
 			{
-				phone_type: 'Local',
+				phone_type: 'local',
+				number: faker.phone.phoneNumber(),
+			},
+			{
+				phone_type: 'celular',
+				number: faker.phone.phoneNumber(),
+			},
+			{
+				phone_type: 'celular',
 				number: faker.phone.phoneNumber(),
 			},
 		],
 		whatsapp: faker.phone.phoneNumber(),
 		images: [
 			{
-				name: faker.image.business.name,
-				url: 'https://picsum.photos/1920/800/?image=' + faker.random.number(1084),
-				size: 7878.787,
+				name: faker.image.nature.name,
+				url: 'https://picsum.photos/1920/800/?image=' + faker.random.number(1084), // faker.image.imageUrl(1920, 800, 'nature', true, true),
+				size: 9545493.45,
 			},
 			{
-				name: faker.image.business.name,
-				url: 'https://picsum.photos/1920/800/?image=' + faker.random.number(1084),
-				size: 45555.23,
+				name: faker.image.nature.name,
+				url: 'https://picsum.photos/1920/800/?image=' + faker.random.number(1084), // faker.image.imageUrl(1920, 800, 'nature', true, true),
+				size: 9545493.45,
+			},
+			{
+				name: faker.image.nature.name,
+				url: 'https://picsum.photos/1920/800/?image=' + faker.random.number(1084), // faker.image.imageUrl(1920, 800, 'nature', true, true),
+				size: 9545493.45,
+			},
+			{
+				name: faker.image.nature.name,
+				url: 'https://picsum.photos/1920/800/?image=' + faker.random.number(1084), // faker.image.imageUrl(1920, 800, 'nature', true, true),
+				size: 9545493.45,
 			},
 		],
-		mission: faker.lorem.text(5),
-		vision: faker.lorem.text(5),
-		description: faker.lorem.text(5),
+		mission: faker.company.bsAdjective(),
+		vision: faker.company.bsBuzz(),
+		description: faker.lorem.paragraphs(5),
 	});
 
 	await db.collection('companies').insertOne(newCompany);
@@ -137,7 +156,36 @@ mockData.generateFarms = async (req, res) => {
 	}
 
 	await db.collection('farms').insertMany(farms);
-	res.status(200).json({ newSeason, newCompany, listServices, farms });
+
+	const seasons = new Seasons({
+		mid: [
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+		],
+		hight: [
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+			faker.date.future(),
+		],
+	});
+
+	await db.collection('seasons').insertOne(seasons);
+
+	const result = {
+		company,
+		listServices,
+		farms,
+		seasons,
+	};
+
+	res.status(200).json(result);
 };
 
 export default mockData;

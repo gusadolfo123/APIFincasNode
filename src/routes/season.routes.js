@@ -1,6 +1,6 @@
-import express from 'express';
+import { Router } from 'express';
 import seasonController from '../controllers/season.controller';
-const router = express.Router();
+const router = Router();
 
 router.get('/', seasonController.getAll);
 router.post('/', seasonController.createSeason);
