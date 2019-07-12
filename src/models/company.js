@@ -25,7 +25,18 @@ const CompanySchema = mongoose.Schema({
 		required: true,
 		trim: true,
 	},
+	coordinate: {
+		type: {
+			lat: mongoose.Types.Decimal128,
+			lon: mongoose.Types.Decimal128
+		}
+	},
+	phones: [{
+
+	}]
 });
+
+
 
 const Company = mongoose.model('Company', CompanySchema);
 

@@ -1,15 +1,3 @@
-// V1. Con libreria de mongodb
-// export class User {
-// 	constructor({ firstName, lastName, birthDate, email, phones = [] }) {
-// 		this.firstName = firstName;
-// 		this.lastName = lastName;
-// 		this.birthDate = birthDate;
-// 		this.email = email;
-// 		this.phones = phones;
-// 	}
-// }
-
-// V2. Con libreria de mongoose para implementar auth
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
@@ -57,7 +45,7 @@ const userSchema = mongoose.Schema({
 	],
 });
 
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
 	const user = this;
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8);
@@ -65,7 +53,7 @@ userSchema.pre('save', async function(next) {
 	next();
 });
 
-userSchema.methods.generateAuthToken = async function() {
+userSchema.methods.generateAuthToken = async function () {
 	const user = this;
 	const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
 	user.tokens = user.tokens.concat({ token });
