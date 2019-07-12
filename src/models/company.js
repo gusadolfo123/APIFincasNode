@@ -1,17 +1,3 @@
-// export class Company {
-// 	constructor({ name, dir, coordinate, phones, whatsapp, images, mission, vision, description }) {
-// 		this.name = name;
-// 		this.dir = dir;
-// 		this.coordinate = coordinate;
-// 		this.phones = phones;
-// 		this.whatsapp = whatsapp;
-// 		this.images = images;
-// 		this.mission = mission;
-// 		this.vision = vision;
-// 		this.description = description;
-// 	}
-// }
-
 import mongoose from 'mongoose';
 
 const CompanySchema = mongoose.Schema({
@@ -32,11 +18,25 @@ const CompanySchema = mongoose.Schema({
 		}
 	},
 	phones: [{
-
-	}]
+		phone_type: String,
+		number: String
+	}],
+	whatsapp: String,
+	images: [{
+		name: String,
+		url: String,
+		size: mongoose.Types.Decimal128
+	}],
+	mission: {
+		type: String
+	},
+	vision: {
+		type: String
+	},
+	description: {
+		type: String
+	}
 });
-
-
 
 const Company = mongoose.model('Company', CompanySchema);
 

@@ -1,6 +1,10 @@
-export class Seasons {
-	constructor({ mid = [Date], hight = [Date] }) {
-		this.mid = mid;
-		this.hight = hight;
-	}
-}
+import mongoose from "mongoose";
+
+const SeasonSchema = mongoose.Schema({
+	mid: [Date],
+	hight: [Date]
+});
+
+const Season = mongoose.model('Season', SeasonSchema);
+
+export default Season;

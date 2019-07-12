@@ -5,6 +5,8 @@ import SeasonRouter from './routes/season.routes';
 import UserRouter from './routes/user.routes';
 import CompanyRouter from './routes/company.routes';
 import auth from './middlewares/auth';
+import farmController from './controllers/farm.controller';
+import MockDataRouter from "./routes/mock-data.routes"
 
 const app = express();
 
@@ -21,5 +23,6 @@ app.use(json()); // para capturar datos que se envian en el cuerpo de un request
 // app.use('/api/services', ServiceRouter);
 app.use('/api/users', UserRouter);
 app.use('/api/companies', auth, CompanyRouter);
+app.use('/api/generate-mock-data', MockDataRouter);
 
 export default app;
