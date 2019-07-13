@@ -6,7 +6,7 @@ import UserRouter from './routes/user.routes';
 import CompanyRouter from './routes/company.routes';
 import auth from './middlewares/auth';
 import farmController from './controllers/farm.controller';
-import MockDataRouter from "./routes/mock-data.routes"
+import MockDataRouter from './routes/mock-data.routes';
 
 const app = express();
 

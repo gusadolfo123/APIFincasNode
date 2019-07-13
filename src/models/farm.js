@@ -1,45 +1,50 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import ImageSchema from './image';
+
+const SeasonSchema = mongoose.Schema(
+	{
+		total: { type: mongoose.Types.Decimal128 },
+		per_person: { type: mongoose.Types.Decimal128 },
+	},
+	{ _id: false },
+);
 
 const FarmSchema = mongoose.Schema({
 	name: {
 		type: String,
-		required: true,
 		trim: true,
+		lowercase: true,
+		required: true,
 	},
 	alias: {
 		type: String,
 		trim: true,
-		required: true
+		lowercase: true,
+		required: true,
 	},
-	dir: String,
+	dir: {
+		type: String,
+		trim: true,
+		lowercase: true,
+	},
 	description: String,
 	coordinate: {
-		type: {
-			lat: mongoose.Types.Decimal128,
-			lon: mongoose.Types.Decimal128
-		}
+		lat: mongoose.Types.Decimal128,
+		lon: mongoose.Types.Decimal128,
 	},
-	images: [{
-		name: String,
-		url: String,
-		size: mongoose.Types.Decimal128
-	}],
+	images: [ImageSchema],
 	prices: {
-		low_season: {
-			total: mongoose.Types.Decimal128,
-			per_person: mongoose.Types.Decimal128
-		},
-		mid_season: {
-			total: mongoose.Types.Decimal128,
-			per_person: mongoose.Types.Decimal128
-		},
-		high_season: {
-			total: mongoose.Types.Decimal128,
-			per_person: mongoose.Types.Decimal128
-		},
+		low_season: SeasonSchema,
+		mid_season: SeasonSchema,
+		high_season: SeasonSchema,
 	},
-	services: [String],
-	terms_conditions: [String]
+	services: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Service',
+		},
+	],
+	terms_conditions: [String],
 });
 
 const Farm = mongoose.model('Farm', FarmSchema);

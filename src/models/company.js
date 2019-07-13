@@ -1,41 +1,30 @@
 import mongoose from 'mongoose';
+import ImageSchema from './image';
+import PhoneSchema from './phone';
 
 const CompanySchema = mongoose.Schema({
 	name: {
 		type: String,
-		required: true,
 		trim: true,
+		lowercase: true,
+		required: true,
 	},
 	dir: {
 		type: String,
-		required: true,
 		trim: true,
+		lowercase: true,
+		required: true,
 	},
 	coordinate: {
-		type: {
-			lat: mongoose.Types.Decimal128,
-			lon: mongoose.Types.Decimal128
-		}
+		lat: mongoose.Types.Decimal128,
+		lon: mongoose.Types.Decimal128,
 	},
-	phones: [{
-		phone_type: String,
-		number: String
-	}],
+	phones: [PhoneSchema],
+	images: [ImageSchema],
 	whatsapp: String,
-	images: [{
-		name: String,
-		url: String,
-		size: mongoose.Types.Decimal128
-	}],
-	mission: {
-		type: String
-	},
-	vision: {
-		type: String
-	},
-	description: {
-		type: String
-	}
+	mission: String,
+	vision: String,
+	description: String,
 });
 
 const Company = mongoose.model('Company', CompanySchema);

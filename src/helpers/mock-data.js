@@ -7,8 +7,7 @@ import { connect, disconnect } from '../database';
 
 const mockData = {};
 
-mockData.generateData = async (req, res) => {
-
+mockData.generateData = async (req, res, next) => {
 	let farms = [];
 
 	try {
@@ -89,8 +88,8 @@ mockData.generateData = async (req, res) => {
 					size: 9545493.45,
 				},
 			],
-			mission: faker.company.bsAdjective(),
-			vision: faker.company.bsBuzz(),
+			mission: faker.lorem.paragraphs(1),
+			vision: faker.lorem.paragraphs(1),
 			description: faker.lorem.paragraphs(5),
 		});
 
@@ -106,12 +105,9 @@ mockData.generateData = async (req, res) => {
 			await newService.save();
 		}
 
-		let listServices = [];
+		const listServices = await Service.find({}).exec();
 
-		Service.find({}, function () {
-
-		});
-		console.log(listServices);
+		let farms = [];
 
 		for (let index = 0; index < 10; index++) {
 			const newFarm = new Farm({
@@ -149,54 +145,27 @@ mockData.generateData = async (req, res) => {
 						per_person: faker.commerce.price(180000, 350000, 2),
 					},
 				},
-				services: [listServices[0]._id.toString(), listServices[1]._id.toString()],
-				terms_conditions: [
-					faker.random.words(5),
-					faker.random.words(5),
-					faker.random.words(5),
-					faker.random.words(5),
-					faker.random.words(5),
-				],
+				services: [listServices[0]._id, listServices[1]._id],
+				terms_conditions: [faker.random.words(5), faker.random.words(5), faker.random.words(5), faker.random.words(5), faker.random.words(5)],
 			});
 			await newFarm.save();
+			farms.push(newFarm);
 		}
 
-		const seasons = new Seasons({
-			mid: [
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-			],
-			hight: [
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-				faker.date.future(),
-			],
-		});
-
-		await seasons.save();
-
 		const result = {
-			company,
+			newCompany,
 			listServices,
 			farms,
-			seasons,
+			newSeason,
 		};
 
 		res.status(200).json(result);
-
 	} catch (error) {
-		console.log(error)
+		console.log(`Errores: ${error}`);
 	} finally {
 		await disconnect();
+		next();
 	}
-
 };
 
 export default mockData;

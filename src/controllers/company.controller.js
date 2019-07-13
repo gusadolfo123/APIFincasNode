@@ -1,78 +1,74 @@
-import { Company } from '../models/company';
+import Company from '../models/company';
 import { connect, disconnect } from '../database';
 
 const companyController = {};
 
-// companyController.getAll = async (req, res) => {
-// 	const db = await connect();
-// 	const companies = await db
-// 		.collection('companies')
-// 		.find({})
-// 		.toArray();
-// 	res.json(companies);
-// };
-
-// companyController.getById = async (req, res) => {
-// 	const db = await connect();
-// 	const { id } = req.params;
-// 	const company = db.collection('companies').findOne({ _id: new ObjectId(id) });
-// 	res.json(company);
-// };
-
-// companyController.createCompany = async (req, res) => {
-// 	const db = await connect();
-// 	let company = new Company(req.body);
-// 	await db.collection('companies').insertOne(company);
-// 	res.status(201).json(company);
-// };
-
-// companyController.updateCompany = async (req, res) => {
-// 	const db = await connect();
-// 	const { id } = req.params;
-// 	let company = new Company(req.body);
-// 	await db.collection('companies').updateOne({ _id: new ObjectId(id) }, { $set: company });
-// 	res.status(200).json(company);
-// };
-
-// companyController.deleteCompany = async (req, res) => {
-// 	const db = await connect();
-// 	const { id } = req.params;
-// 	await db.collection('companies').deleteOne({ _id: new ObjectId(id) });
-// 	res.status(200).json(`Eliminacion se realizo correctamente`);
-// };
-
 companyController.getAll = async (req, res) => {
 	try {
-		const company = res.status(200).send({ company });
+		console.log('1. companyController.getAll');
+		await connect();
+		console.log('2. companyController.getAll');
+		const companies = await Company.find({}).exec();
+		res.status(200).send({ companies });
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).send({ error });
 	} finally {
+		console.log('3. companyController.getAll');
 		await disconnect();
+		console.log('4. companyController.getAll');
 	}
-
-	await connect();
-	const companies = await db
-		.collection('companies')
-		.find({})
-		.toArray();
-	res.json(companies);
-	res.status(200).send(`se realizo correctamente`);
 };
 
 companyController.getById = async (req, res) => {
-	res.json('Ok');
+	try {
+		await connect();
+		const { id } = req.params;
+		const company = await Company.findById({ id });
+		res.status(200).send({ company });
+	} catch (error) {
+		res.status(400).send({ error });
+	} finally {
+		await disconnect();
+	}
 };
 
 companyController.createCompany = async (req, res) => {
-	res.json('Ok');
+	try {
+		await connect();
+		const company = new Company(req.body);
+		await company.save();
+		res.status(200).send({ company });
+	} catch (error) {
+		res.status(400).send({ error });
+	} finally {
+		await disconnect();
+	}
 };
 
 companyController.updateCompany = async (req, res) => {
-	res.json('Ok');
+	try {
+		await connect();
+		const { id } = req.params;
+		const company = await Company.findByIdAndUpdate(id, { $set: req.body });
+		res.status(200).send({ company });
+	} catch (error) {
+		res.status(400).send({ error });
+	} finally {
+		await disconnect();
+	}
 };
 
 companyController.deleteCompany = async (req, res) => {
-	res.json('Ok');
+	try {
+		await connect();
+		const { id } = req.params;
+		await Company.deleteOne({ _id: id });
+		res.status(200).send(`Compañia eliminada correctamente`);
+	} catch (error) {
+		res.status(400).send({ error });
+	} finally {
+		await disconnect();
+	}
 };
 
 export default companyController;
