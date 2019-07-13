@@ -1,16 +1,14 @@
-import { connect } from '../database';
-import { Farm } from '../models/farm';
-import { ObjectId } from 'mongodb';
+import Farm from '../models/farm';
 
 const farmController = {};
 
 farmController.getAll = async (req, res) => {
-	const db = await connect();
-	const result = await db
-		.collection('farms')
-		.find({})
-		.toArray();
-	res.json(result);
+	try {
+		const farms = await Farm.find({}).exec();
+		res.status(200).send({ farms });
+	} catch (error) {
+		res.status(200).send({ error });
+	}
 };
 
 farmController.getBy = async (req, res, next) => {

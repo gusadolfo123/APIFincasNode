@@ -1,6 +1,4 @@
-import { connect } from '../database';
 import { Seasons } from '../models/seasons';
-import { ObjectId } from 'mongodb';
 
 const seasonController = {};
 

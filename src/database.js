@@ -1,25 +1,28 @@
 import mongoose from 'mongoose';
 
-export async function connect() {
-	try {
-		await mongoose.connect(process.env.MONGODB_URL, {
-			useNewUrlParser: true,
-			useCreateIndex: true,
-		});
-		console.log(`DB is connected`);
-	} catch (error) {
-		throw `Error al intentar conectar con la base de datos: ${error}`;
-	}
-}
+mongoose.connect(process.env.MONGODB_URL, {
+	useNewUrlParser: true,
+	useCreateIndex: true,
+});
 
-export async function disconnect() {
-	try {
-		console.log(55);
-		await mongoose.disconnect();
-		console.log(66);
-		console.log(`DB is disconnected`);
-	} catch (error) {
-		console.log(77);
-		throw `Error al intentar cerrar conexion con la base de datos ${error}`;
-	}
-}
+mongoose.connection.on('connected', function () {
+	console.log("Mongoose default connection is open to ", process.env.MONGODB_URL);
+});
+
+mongoose.connection.on('error', function (err) {
+	console.log("Mongoose default connection has occured " + err + " error");
+});
+
+mongoose.connection.on('disconnected', function () {
+	console.log("Mongoose default connection is disconnected");
+});
+
+process.on('SIGINT', function () {
+	mongoose.connection.close(function () {
+		console.log("Mongoose default connection is disconnected due to application termination");
+		process.exit(0);
+	});
+});
+
+
+
