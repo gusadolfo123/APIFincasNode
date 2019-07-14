@@ -1,23 +1,55 @@
 import Company from '../models/company';
+import { Response, TypeResult } from '../helpers/response';
+import { isNullOrUndefined } from 'util';
 
 const companyController = {};
 
 companyController.getAll = async (req, res) => {
 	try {
-		const companies = await Company.find({}).exec();
-		res.status(200).send({ companies });
+		const companies = await Company.find({});
+		const isEmpty = companies.length == 0;
+
+		res.status(200).json(
+			new Response({
+				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+				isError: false,
+				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+				object: companies,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send({ error });
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
 companyController.getById = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const company = await Company.findById({ id });
-		res.status(200).send({ company });
+		const company = await Company.findOne({ id });
+		const isEmpty = isNullOrUndefined(company);
+
+		res.status(200).json(
+			new Response({
+				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+				isError: false,
+				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+				object: company,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send({ error });
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
@@ -25,29 +57,80 @@ companyController.createCompany = async (req, res) => {
 	try {
 		const company = new Company(req.body);
 		await company.save();
-		res.status(200).send({ company });
+
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: ``,
+				object: company,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send({ error });
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
 companyController.updateCompany = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const company = await Company.findByIdAndUpdate(id, { $set: req.body });
-		res.status(200).send({ company });
+		const result = await Company.updateOne({ id }, req.body);
+
+		if (result.nModified > 0)
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: `Registro modificado correctamente`,
+				}),
+			);
 	} catch (error) {
-		res.status(400).send({ error });
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
-companyController.deleteCompany = async (req, res) => {
+companyController.deleteCompany = async (req, res, next) => {
 	try {
 		const { id } = req.params;
-		await Company.deleteOne({ _id: id });
-		res.status(200).send(`Compañia eliminada correctamente`);
+		const result = await Company.deleteOne({ _id: id });
+
+		if (result.deletedCount > 0)
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: `Registro eliminado correctamente`,
+				}),
+			);
+
+		if (result.n == 0)
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: `Registro no encontrado`,
+				}),
+			);
 	} catch (error) {
-		res.status(400).send({ error });
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 

@@ -3,49 +3,52 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const userSchema = mongoose.Schema({
-	firstName: {
-		type: String,
-		required: true,
-		trim: true,
-	},
-	lastName: {
-		type: String,
-		required: true,
-		trim: true,
-	},
-	birthDate: {
-		type: Date,
-		required: true,
-		trim: true,
-	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-		lowercase: true,
-		validate: value => {
-			if (!validator.isEmail(value)) {
-				throw new Error('Invalid Email Address');
-			}
+const userSchema = mongoose.Schema(
+	{
+		firstName: {
+			type: String,
+			required: true,
+			trim: true,
 		},
-	},
-	password: {
-		type: String,
-		required: true,
-		minLength: 7,
-	},
-	tokens: [
-		{
-			token: {
-				type: String,
-				required: true,
+		lastName: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		birthDate: {
+			type: Date,
+			required: true,
+			trim: true,
+		},
+		email: {
+			type: String,
+			required: true,
+			unique: true,
+			lowercase: true,
+			validate: value => {
+				if (!validator.isEmail(value)) {
+					throw new Error('Invalid Email Address');
+				}
 			},
 		},
-	],
-});
+		password: {
+			type: String,
+			required: true,
+			minLength: 7,
+		},
+		tokens: [
+			{
+				token: {
+					type: String,
+					required: true,
+				},
+			},
+		],
+	},
+	{ versionKey: false },
+);
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function(next) {
 	const user = this;
 	if (user.isModified('password')) {
 		user.password = await bcrypt.hash(user.password, 8);
@@ -53,7 +56,7 @@ userSchema.pre('save', async function (next) {
 	next();
 });
 
-userSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function() {
 	const user = this;
 	const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY);
 	user.tokens = user.tokens.concat({ token });

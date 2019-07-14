@@ -9,43 +9,46 @@ const SeasonSchema = mongoose.Schema(
 	{ _id: false },
 );
 
-const FarmSchema = mongoose.Schema({
-	name: {
-		type: String,
-		trim: true,
-		lowercase: true,
-		required: true,
-	},
-	alias: {
-		type: String,
-		trim: true,
-		lowercase: true,
-		required: true,
-	},
-	dir: {
-		type: String,
-		trim: true,
-		lowercase: true,
-	},
-	description: String,
-	coordinate: {
-		lat: mongoose.Types.Decimal128,
-		lon: mongoose.Types.Decimal128,
-	},
-	images: [ImageSchema],
-	prices: {
-		low_season: SeasonSchema,
-		mid_season: SeasonSchema,
-		high_season: SeasonSchema,
-	},
-	services: [
-		{
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Service',
+const FarmSchema = mongoose.Schema(
+	{
+		name: {
+			type: String,
+			trim: true,
+			lowercase: true,
+			required: true,
 		},
-	],
-	terms_conditions: [String],
-});
+		alias: {
+			type: String,
+			trim: true,
+			lowercase: true,
+			required: true,
+		},
+		dir: {
+			type: String,
+			trim: true,
+			lowercase: true,
+		},
+		description: String,
+		coordinate: {
+			lat: mongoose.Types.Decimal128,
+			lon: mongoose.Types.Decimal128,
+		},
+		images: [ImageSchema],
+		prices: {
+			low_season: SeasonSchema,
+			mid_season: SeasonSchema,
+			high_season: SeasonSchema,
+		},
+		services: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Service',
+			},
+		],
+		terms_conditions: [String],
+	},
+	{ versionKey: false },
+);
 
 const Farm = mongoose.model('Farm', FarmSchema);
 

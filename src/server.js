@@ -15,7 +15,7 @@ const app = express();
 app.set('port', process.env.PORT || 4565);
 
 //Middlewares
-// app.use(urlencoded({ extended: false }));
+app.use(urlencoded({ extended: false }));
 app.use(json()); // para capturar datos que se envian en el cuerpo de un request
 
 //Routes
