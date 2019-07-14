@@ -62,7 +62,7 @@ companyController.createCompany = async (req, res) => {
 			new Response({
 				type: TypeResult.Success,
 				isError: false,
-				message: ``,
+				message: `Registro creado correctamente`,
 				object: company,
 			}),
 		);
@@ -80,7 +80,7 @@ companyController.createCompany = async (req, res) => {
 companyController.updateCompany = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const result = await Company.updateOne({ id }, req.body);
+		const result = await Company.updateOne({ _id: id }, req.body);
 
 		if (result.nModified > 0)
 			res.status(200).json(
@@ -90,6 +90,15 @@ companyController.updateCompany = async (req, res) => {
 					message: `Registro modificado correctamente`,
 				}),
 			);
+		else {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Info,
+					isError: true,
+					message: `Registro no encontrado`,
+				}),
+			);
+		}
 	} catch (error) {
 		res.status(400).json(
 			new Response({

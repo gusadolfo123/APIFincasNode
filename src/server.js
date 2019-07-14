@@ -7,7 +7,7 @@ import CompanyRouter from './routes/company.routes';
 import auth from './middlewares/auth';
 import farmController from './controllers/farm.controller';
 import MockDataRouter from './routes/mock-data.routes';
-import "./database";
+import './database';
 
 const app = express();
 
@@ -19,9 +19,10 @@ app.use(urlencoded({ extended: false }));
 app.use(json()); // para capturar datos que se envian en el cuerpo de un request
 
 //Routes
-// app.use('/api/farms', FarmRoutes);
+
 // app.use('/api/seasons', SeasonRouter);
 // app.use('/api/services', ServiceRouter);
+app.use('/api/farms', FarmRoutes);
 app.use('/api/users', UserRouter);
 app.use('/api/companies', auth, CompanyRouter);
 app.use('/api/generate-mock-data', MockDataRouter);

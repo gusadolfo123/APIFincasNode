@@ -1,77 +1,176 @@
 import Farm from '../models/farm';
+import { Response, TypeResult } from '../helpers/response';
 
 const farmController = {};
 
 farmController.getAll = async (req, res) => {
 	try {
-		const farms = await Farm.find({}).exec();
-		res.status(200).send({ farms });
+		const farms = await Farm.find({});
+		const isEmpty = farms.length == 0;
+
+		res.status(200).json(
+			new Response({
+				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+				isError: false,
+				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+				object: farms,
+			}),
+		);
 	} catch (error) {
-		res.status(200).send({ error });
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
-farmController.getBy = async (req, res, next) => {
-	const db = await connect();
-	const { where, select } = req.body;
-	const result = await db
-		.collection('farms')
-		.find(where, select)
-		.toArray();
-	res.status(200).json(result);
+farmController.getById = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const farm = await Farm.findOne({ id });
+		const isEmpty = isNullOrUndefined(farm);
+
+		res.status(200).json(
+			new Response({
+				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+				isError: false,
+				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+				object: farm,
+			}),
+		);
+	} catch (error) {
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
+	}
 };
 
 farmController.createOne = async (req, res) => {
 	try {
-		const db = await connect();
-		let farm = new Farm(req.body);
-		await db.collection('farms').insertOne(farm);
-		res.json(farm);
+		const farm = new Farm(req.body);
+		await farm.save();
+
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Registro creado correctamente`,
+				object: farm,
+			}),
+		);
 	} catch (error) {
-		res.json(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
 farmController.update = async (req, res) => {
-	const db = await connect();
-	const { id } = req.params;
-	const farm = new Farm(req.body);
-	const document = await db.collection('farms').updateOne({ _id: new ObjectId(id) }, { $set: farm });
+	try {
+		const { id } = req.params;
+		const result = await Farm.updateOne({ _id: id }, req.body);
 
-	if (document.result.n === 0) res.status(200).json(`Finca no existente`);
-	else res.status(200).json(`Finca Modificada correctamente`);
+		if (result.nModified > 0)
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: `Registro modificado correctamente`,
+				}),
+			);
+		else {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Info,
+					isError: true,
+					message: `Registro no encontrado`,
+				}),
+			);
+		}
+	} catch (error) {
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
+	}
 };
 
 farmController.deleteOne = async (req, res) => {
-	const db = await connect();
-	const { id } = body.params;
-	const document = await db.collection('farms').deleteOne({ _id: new ObjectId(id) });
+	try {
+		const { id } = req.params;
+		const result = await Farm.deleteOne({ _id: id });
 
-	if (document.result.n === 0) res.status(200).json(`Finca no existente`);
-	else res.status(200).json(`Finca eliminado correctamente`);
+		if (result.deletedCount > 0)
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: `Registro eliminado correctamente`,
+				}),
+			);
+
+		if (result.n == 0)
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: `Registro no encontrado`,
+				}),
+			);
+	} catch (error) {
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
+	}
 };
 
 farmController.getFarmsPerPage = async (req, res, next) => {
-	const perPage = 9;
+	const perPage = 2;
 	const page = req.params.page || 1;
-	const db = await connect();
 
-	await db
-		.collection('farms')
-		.find({})
-		.skip(perPage * page - perPage)
-		.limit(perPage)
-		.exec((err, farms) => {
-			Farm.countDocuments((err, count) => {
+	try {
+		await Farm.find({})
+			.skip(perPage * page - perPage)
+			.limit(perPage)
+			.exec((err, farms) => {
 				if (err) return next(err);
-				res.status(200).json({
-					farms,
-					current: page,
-					pages: Math.ceil(count / perPage),
-					total: count,
+				Farm.countDocuments((err, count) => {
+					if (err) return next(err);
+					res.status(200).json({
+						farms,
+						current: page,
+						pages: Math.ceil(count / perPage),
+						total: count,
+					});
 				});
 			});
-		});
+	} catch (error) {
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
+	}
 };
 
 export default farmController;
