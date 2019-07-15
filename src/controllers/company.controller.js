@@ -31,7 +31,7 @@ companyController.getAll = async (req, res) => {
 companyController.getById = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const company = await Company.findOne({ id });
+		const company = await Company.findOne({ _id: id });
 		const isEmpty = isNullOrUndefined(company);
 
 		res.status(200).json(
