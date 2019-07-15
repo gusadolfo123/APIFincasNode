@@ -1,4 +1,5 @@
 import User from '../models/user';
+import { Response, TypeResult } from '../helpers/response';
 
 const userCtrl = {};
 
@@ -9,9 +10,22 @@ userCtrl.register = async (req, res) => {
 
 		const token = await user.generateAuthToken();
 
-		res.status(200).send({ user, token });
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Registro creado correctamente`,
+				object: { user, token },
+			}),
+		);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
@@ -24,33 +38,68 @@ userCtrl.login = async (req, res) => {
 
 		const token = await user.generateAuthToken();
 
-		res.status(200).send({ user, token });
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Registro creado correctamente`,
+				object: { user, token },
+			}),
+		);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
 userCtrl.logoutMe = async (req, res) => {
 	try {
 		req.user.tokens = req.user.tokens.filter(token => token.token != req.token);
-
 		await req.user.save();
 
-		res.send(`logout ok`);
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Logout Ok`,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
 userCtrl.logoutAll = async (req, res) => {
 	try {
 		req.user.tokens.splice(0, req.user.tokens.length);
-
 		await req.user.save();
 
-		res.send(`logout ok`);
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Logout Ok`,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
