@@ -60,7 +60,7 @@ userCtrl.login = async (req, res) => {
 
 userCtrl.logoutMe = async (req, res) => {
 	try {
-		await logoutMe(req.user);
+		await logoutMe(req);
 
 		res.status(200).json(
 			new Response({

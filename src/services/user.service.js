@@ -1,15 +1,12 @@
 import User from '../models/user';
 
 export async function registerUser(data) {
-	const user = new User(req.body);
+	const user = new User(data);
 	await user.save();
 	const token = await user.generateAuthToken();
 
-	const userResult = Object.assign({}, user);
-	delete userResult['password'];
-
 	return {
-		userResult,
+		user,
 		token,
 	};
 }
@@ -24,8 +21,10 @@ export async function loginUser(data) {
 	return { user, token };
 }
 
-export async function logoutMe(user) {
-	user.tokens = user.tokens.filter(token => token.token != req.token);
+export async function logoutMe({ user, token }) {
+	user.tokens = user.tokens.filter(element => {
+		return token != element.token;
+	});
 	await user.save();
 }
 
