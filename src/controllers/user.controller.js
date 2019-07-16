@@ -1,56 +1,104 @@
-import User from '../models/user';
+import { Response, TypeResult } from '../helpers/response';
+import { registerUser, loginUser, logoutMe, logoutAll } from '../services/user.service';
 
 const userCtrl = {};
 
 userCtrl.register = async (req, res) => {
-	try {
-		const user = new User(req.body);
-		await user.save();
-
-		const token = await user.generateAuthToken();
-
-		res.status(200).send({ user, token });
-	} catch (error) {
-		res.status(400).send(error);
-	}
+	registerUser(req.body)
+		.then(result => {
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: `Registro creado correctamente`,
+					object: result,
+				}),
+			);
+		})
+		.catch(error => {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: error,
+				}),
+			);
+		});
 };
 
 userCtrl.login = async (req, res) => {
-	try {
-		const { email, password } = req.body;
-		const user = await User.findByCredentials(email, password);
+	loginUser(req.body)
+		.then(result => {
+			if (!result.user)
+				return res.status(401).json(
+					new Response({
+						type: TypeResult.Danger,
+						isError: true,
+						message: 'Login Failed! Check authentication credentials',
+					}),
+				);
 
-		if (!user) return res.status(401).send({ error: 'Login Failed! Check authentication credentials' });
-
-		const token = await user.generateAuthToken();
-
-		res.status(200).send({ user, token });
-	} catch (error) {
-		res.status(400).send(error);
-	}
+			return res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: 'Login Ok',
+					object: result,
+				}),
+			);
+		})
+		.catch(error => {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: error,
+				}),
+			);
+		});
 };
 
 userCtrl.logoutMe = async (req, res) => {
 	try {
-		req.user.tokens = req.user.tokens.filter(token => token.token != req.token);
+		await logoutMe(req);
 
-		await req.user.save();
-
-		res.send(`logout ok`);
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Logout Ok`,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 
 userCtrl.logoutAll = async (req, res) => {
 	try {
-		req.user.tokens.splice(0, req.user.tokens.length);
+		await logoutAll(req.user);
 
-		await req.user.save();
-
-		res.send(`logout ok`);
+		res.status(200).json(
+			new Response({
+				type: TypeResult.Success,
+				isError: false,
+				message: `Logout Ok`,
+			}),
+		);
 	} catch (error) {
-		res.status(400).send(error);
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
 	}
 };
 

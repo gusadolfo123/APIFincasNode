@@ -1,80 +1,80 @@
-import Company from '../models/company';
+import { getAllCompanies, getCompanyById, updateCompany, createCompany, deleteCompany, getCompaniesPerPage } from '../services/company.service';
 import { Response, TypeResult } from '../helpers/response';
 import { isNullOrUndefined } from 'util';
 
 const companyController = {};
 
 companyController.getAll = async (req, res) => {
-	try {
-		const companies = await Company.find({});
-		const isEmpty = companies.length == 0;
-
-		res.status(200).json(
-			new Response({
-				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
-				isError: false,
-				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
-				object: companies,
-			}),
-		);
-	} catch (error) {
-		res.status(400).json(
-			new Response({
-				type: TypeResult.Danger,
-				isError: true,
-				message: error,
-			}),
-		);
-	}
+	getAllCompanies()
+		.then(companies => {
+			const isEmpty = companies.length == 0;
+			res.status(200).json(
+				new Response({
+					type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+					isError: false,
+					message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+					object: companies,
+				}),
+			);
+		})
+		.catch(error => {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: error,
+				}),
+			);
+		});
 };
 
 companyController.getById = async (req, res) => {
-	try {
-		const { id } = req.params;
-		const company = await Company.findOne({ id });
-		const isEmpty = isNullOrUndefined(company);
+	const { id } = req.params;
 
-		res.status(200).json(
-			new Response({
-				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
-				isError: false,
-				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
-				object: company,
-			}),
-		);
-	} catch (error) {
-		res.status(400).json(
-			new Response({
-				type: TypeResult.Danger,
-				isError: true,
-				message: error,
-			}),
-		);
-	}
+	getCompanyById(id)
+		.then(company => {
+			const isEmpty = isNullOrUndefined(company);
+			res.status(200).json(
+				new Response({
+					type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+					isError: false,
+					message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+					object: company,
+				}),
+			);
+		})
+		.catch(error => {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: error,
+				}),
+			);
+		});
 };
 
 companyController.createCompany = async (req, res) => {
-	try {
-		const company = new Company(req.body);
-		await company.save();
-
-		res.status(200).json(
-			new Response({
-				type: TypeResult.Success,
-				isError: false,
-				message: `Registro creado correctamente`,
-				object: company,
-			}),
-		);
-	} catch (error) {
-		res.status(400).json(
-			new Response({
-				type: TypeResult.Danger,
-				isError: true,
-				message: error,
-			}),
-		);
-	}
+	createCompany(req.body)
+		.then(farm => {
+			res.status(200).json(
+				new Response({
+					type: TypeResult.Success,
+					isError: false,
+					message: `Registro creado correctamente`,
+					object: farm,
+				}),
+			);
+		})
+		.catch(error => {
+			res.status(400).json(
+				new Response({
+					type: TypeResult.Danger,
+					isError: true,
+					message: error,
+				}),
+			);
+		});
 };
 
 companyController.updateCompany = async (req, res) => {
