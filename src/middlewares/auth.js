@@ -2,10 +2,10 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import { isNullOrUndefined } from 'util';
 
-export const auth = async (req, res, next) => {
+const auth = async (req, res, next) => {
 	try {
 		if (isNullOrUndefined(req.header('Authorization'))) {
-			res.status(401).send({ error: `Not authorized to access` });
+			res.status(401).json({ error: `Not authorized to access` });
 		} else {
 			const token = req.header('Authorization').replace('Bearer ', '');
 			const data = jwt.verify(token, process.env.JWT_KEY);
@@ -19,6 +19,8 @@ export const auth = async (req, res, next) => {
 			next();
 		}
 	} catch (error) {
-		res.status(401).send({ error: `Not authorized to access this resource: ${error}` });
+		res.status(401).json({ error: `Not authorized to access this resource` });
 	}
 };
+
+export default auth;
