@@ -1,14 +1,30 @@
-import { Seasons } from '../models/seasons';
+import Season from '../models/seasons';
+import { Response, TypeResult } from '../helpers/response';
 
 const seasonController = {};
 
 seasonController.getAll = async (req, res) => {
-	const db = await connect();
-	const seasons = await db
-		.collection('seasons')
-		.find({})
-		.toArray();
-	res.status(200).json(seasons);
+	try {
+		const seasons = await Season.find({});
+		const isEmpty = farms.length == 0;
+
+		res.status(200).json(
+			new Response({
+				type: isEmpty ? TypeResult.Warning : TypeResult.Success,
+				isError: false,
+				message: isEmpty ? `No existen registros` : 'Consulta exitosa',
+				object: seasons,
+			}),
+		);
+	} catch (error) {
+		res.status(400).json(
+			new Response({
+				type: TypeResult.Danger,
+				isError: true,
+				message: error,
+			}),
+		);
+	}
 };
 
 seasonController.createSeason = async (req, res) => {
