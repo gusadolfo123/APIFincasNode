@@ -3,12 +3,13 @@ import Farm from '../models/farm';
 import Service from '../models/service';
 import Company from '../models/company';
 import Season from '../models/seasons';
+import mongo from '../database';
 
 const mockData = {};
 
 mockData.generateData = async (req, res, next) => {
-
 	try {
+		await mongo.connect();
 
 		// seasons
 		let midSeason = [];
