@@ -160,6 +160,8 @@ mockData.generateData = async (req, res, next) => {
 		res.status(200).json(result);
 	} catch (error) {
 		res.status(400).send({ error });
+	} finally {
+		await mongo.disconnect();
 	}
 };
 
