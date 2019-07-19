@@ -6,7 +6,7 @@ export default (() => {
 		isDisconnecting = false;
 
 	mongoose.connection.on('connected', function() {
-		console.log('Mongoose default connection is open to ', process.env.MONGODB_URL);
+		console.log('Mongoose default connection is open to ', MONGODB_URL);
 	});
 
 	mongoose.connection.on('error', function(err) {
@@ -24,38 +24,31 @@ export default (() => {
 		});
 	});
 
-	function connect() {
-		return new Promise((resolve, reject) => {
-			mongoose.connect(
-				MONGODB_URL,
-				{
-					useNewUrlParser: true,
-					useCreateIndex: true,
-				},
-				function(err) {
-					if (!err) reject(err);
-					console.log('Conectado satisfactoriamente al servidor de Mongo!');
-					instance = client;
-					resolve();
-				},
-			);
-		});
+	async function connect() {
+		instance = await mongoose.connect(
+			MONGODB_URL,
+			{
+				useNewUrlParser: true,
+				useCreateIndex: true,
+			},
+			function(err) {
+				if (err) throw err;
+				console.log('Conectado satisfactoriamente al servidor de Mongo!');
+			},
+		);
+		return instance;
 	}
 
-	function disconnect() {
+	async function disconnect() {
 		if (instance && !isDisconnecting) {
 			isDisconnecting = true;
 			console.log('Desconectando instancia de Mongo');
-			return new Promise((resolve, reject) => {
-				instance.close((err, result) => {
-					if (err) {
-						reject(err);
-						isDisconnecting = false;
-						return;
-					}
-					console.log('Instancia de Mongo desconectada!');
-					resolve();
-				});
+			await instance.connection.close((err, result) => {
+				if (err) {
+					isDisconnecting = false;
+					throw err;
+				}
+				console.log('Instancia de Mongo desconectada!');
 			});
 		}
 	}
