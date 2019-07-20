@@ -11,9 +11,6 @@ import UserRouter from './routes/user.routes';
 import CompanyRouter from './routes/company.routes';
 import MockDataRouter from './routes/mock-data.routes';
 
-// import database connection
-import './database';
-
 const app = express();
 
 //Config

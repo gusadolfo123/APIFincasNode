@@ -1,61 +1,45 @@
 import mongoose from 'mongoose';
 import { MONGODB_URL } from '../config';
+import { isNullOrUndefined } from 'util';
 
-export default (() => {
-	let instance = null,
-		isDisconnecting = false;
-
-	mongoose.connection.on('connected', function() {
-		console.log('Mongoose default connection is open to ', MONGODB_URL);
-	});
-
-	mongoose.connection.on('error', function(err) {
-		console.log('Mongoose default connection has occured ' + err + ' error');
-	});
-
-	mongoose.connection.on('disconnected', function() {
-		console.log('Mongoose default connection is disconnected');
-	});
-
-	process.on('SIGINT', function() {
-		mongoose.connection.close(function() {
-			console.log('Mongoose default connection is disconnected due to application termination');
-			process.exit(0);
+export class MongoConnection {
+	constructor() {
+		mongoose.connection.on('connected', function() {
+			console.log('Mongoose default connection is open to ', MONGODB_URL);
 		});
-	});
 
-	async function connect() {
-		instance = await mongoose.connect(
-			MONGODB_URL,
-			{
-				useNewUrlParser: true,
-				useCreateIndex: true,
-			},
-			function(err) {
-				if (err) throw err;
-				console.log('Conectado satisfactoriamente al servidor de Mongo!');
-			},
-		);
-		return instance;
-	}
+		mongoose.connection.on('error', function(err) {
+			console.log('Mongoose default connection has occured ' + err + ' error');
+		});
 
-	async function disconnect() {
-		if (instance && !isDisconnecting) {
-			isDisconnecting = true;
-			console.log('Desconectando instancia de Mongo');
-			await instance.connection.close((err, result) => {
-				if (err) {
-					isDisconnecting = false;
-					throw err;
-				}
-				console.log('Instancia de Mongo desconectada!');
+		mongoose.connection.on('disconnected', function() {
+			console.log('Mongoose default connection is disconnected');
+		});
+
+		process.on('SIGINT', function() {
+			mongoose.connection.close(function() {
+				console.log('Mongoose default connection is disconnected due to application termination');
+				process.exit(0);
 			});
-		}
+		});
 	}
 
-	return {
-		connect,
-		disconnect,
-		instance: () => instance,
-	};
-})();
+	async getInstance() {
+		if (isNullOrUndefined(this.instance)) await this.connect();
+		return this.instance;
+	}
+
+	async connect() {
+		this.instance = await mongoose.connect(MONGODB_URL, {
+			useNewUrlParser: true,
+			useCreateIndex: true,
+		});
+	}
+
+	async disconnect() {
+		await this.instance.close((err, result) => {
+			if (err) throw err;
+			console.log('Instancia de Mongo desconectada!');
+		});
+	}
+}
