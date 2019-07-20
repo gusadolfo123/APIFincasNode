@@ -1,12 +1,15 @@
-import { Router } from 'express';
+import auth from '../middlewares/auth';
 import farmController from '../controllers/farm.controller';
-const router = Router();
 
-router.get('/', farmController.getAll);
-router.get('/getPerPage/:page?', farmController.getFarmsPerPage);
-router.get('/:id', farmController.getById);
-router.post('/', farmController.createOne);
-router.put('/:id', farmController.update);
-router.delete('/:id', farmController.deleteOne);
+function FarmRouter(router) {
+	router.get('/api/farms/', auth, farmController.getAll);
+	router.get('/api/farms/getPerPage/:page?', auth, farmController.getFarmsPerPage);
+	router.get('/api/farms/:id', auth, farmController.getById);
+	router.post('/api/farms/', auth, farmController.createOne);
+	router.put('/api/farms/:id', auth, farmController.update);
+	router.delete('/api/farms/:id', auth, farmController.deleteOne);
 
-export default router;
+	return router;
+}
+
+module.exports = FarmRouter;

@@ -1,9 +1,12 @@
-import { Router } from 'express';
+import auth from '../middlewares/auth';
 import seasonController from '../controllers/season.controller';
-const router = Router();
 
-router.get('/', seasonController.getAll);
-router.post('/', seasonController.createSeason);
-router.put('/:id', seasonController.updateSeason);
+function SeasonRouter(router) {
+	router.get('/api/seasons/', auth, seasonController.getAll);
+	router.post('/api/seasons/', auth, seasonController.createSeason);
+	router.put('/api/seasons/:id', auth, seasonController.updateSeason);
 
-export default router;
+	return router;
+}
+
+module.exports = SeasonRouter;

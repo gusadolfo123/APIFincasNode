@@ -1,7 +1,9 @@
-import { Router } from 'express';
 import mockData from '../helpers/mock-data';
-const router = Router();
 
-router.get('/', mockData.generateData);
+function MockRouter(router) {
+	router.get('/api/generate-mock-data/', mockData.generateData);
 
-export default router;
+	return router;
+}
+
+module.exports = MockRouter;

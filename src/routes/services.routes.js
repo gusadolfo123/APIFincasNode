@@ -1,11 +1,14 @@
-import { Router } from 'express';
+import auth from '../middlewares/auth';
 import serviceController from '../controllers/service.controller';
-const router = Router();
 
-router.get('/', serviceController.getAll);
-router.get('/:id', serviceController.getById);
-router.post('/', serviceController.createOne);
-router.put('/:id', serviceController.update);
-router.delete('/:id', serviceController.deleteOne);
+function ServiceRouter(router) {
+	router.get('/api/services/', auth, serviceController.getAll);
+	router.get('/api/services/:id', auth, serviceController.getById);
+	router.post('/api/services/', auth, serviceController.createOne);
+	router.put('/api/services/:id', auth, serviceController.update);
+	router.delete('/api/services/:id', auth, serviceController.deleteOne);
 
-export default router;
+	return router;
+}
+
+module.exports = ServiceRouter;

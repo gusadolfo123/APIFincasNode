@@ -1,12 +1,14 @@
-import { Router } from 'express';
+import auth from '../middlewares/auth';
 import companyController from '../controllers/company.controller';
 
-const router = Router();
+function CompanyRouter(router) {
+	router.get('/api/companies/', auth, companyController.getAll);
+	router.get('/api/companies/:id', auth, companyController.getById);
+	router.post('/api/companies/', auth, companyController.createCompany);
+	router.put('/api/companies/:id', auth, companyController.updateCompany);
+	router.delete('/api/companies/:id', auth, companyController.deleteCompany);
 
-router.get('/', companyController.getAll);
-router.get('/:id', companyController.getById);
-router.post('/', companyController.createCompany);
-router.put('/:id', companyController.updateCompany);
-router.delete('/:id', companyController.deleteCompany);
+	return router;
+}
 
-export default router;
+module.exports = CompanyRouter;

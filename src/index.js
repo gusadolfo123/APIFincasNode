@@ -14,6 +14,6 @@ const mongoClient = new MongoConnection();
 	process.on('SIGTERM', closeApp);
 })();
 
-function closeApp() {
-	mongoClient.disconnect().then(() => process.exit(0));
+async function closeApp() {
+	await mongoClient.disconnect().then(() => process.exit(0));
 }

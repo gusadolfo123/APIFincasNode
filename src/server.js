@@ -1,15 +1,7 @@
-import express, { json, urlencoded } from 'express';
+import express, { json, urlencoded, Router } from 'express';
 
-// import middleware
+// imports middlewares
 import auth from './middlewares/auth';
-
-// import routes
-import FarmRoutes from './routes/farms.routes';
-import ServiceRouter from './routes/services.routes';
-import SeasonRouter from './routes/season.routes';
-import UserRouter from './routes/user.routes';
-import CompanyRouter from './routes/company.routes';
-import MockDataRouter from './routes/mock-data.routes';
 
 const app = express();
 
@@ -21,11 +13,13 @@ app.use(urlencoded({ extended: false }));
 app.use(json()); // para capturar datos que se envian en el cuerpo de un request
 
 //Routes
-app.use('/api/users', UserRouter);
-app.use('/api/seasons', auth, SeasonRouter);
-app.use('/api/services', auth, ServiceRouter);
-app.use('/api/farms', auth, FarmRoutes);
-app.use('/api/companies', auth, CompanyRouter);
-app.use('/api/generate-mock-data', MockDataRouter);
+require('./routes/main.routes')(app, Router());
+//app.use('/api', require('./routes/index.routes')(Router()));
+// app.use('/api/users', MainRouter(Router()));
+// app.use('/api/seasons', auth, SeasonRouter);
+// app.use('/api/services', auth, ServiceRouter);
+// app.use('/api/farms', auth, FarmRoutes);
+// app.use('/api/companies', auth, CompanyRouter);
+// app.use('/api/generate-mock-data', MockDataRouter);
 
 export default app;

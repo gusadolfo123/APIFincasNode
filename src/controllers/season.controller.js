@@ -1,5 +1,4 @@
 import { getAllSeasons, createSeason, updateSeason } from '../services/season.service';
-
 import { Response, TypeResult } from '../helpers/response';
 
 const seasonController = {};
@@ -27,7 +26,6 @@ seasonController.getAll = async (req, res) => {
 				}),
 			);
 		});
->>>>>>> 600a7212cfd3b560627a8271dd6dcc946f8f675f
 };
 
 seasonController.createSeason = async (req, res) => {
