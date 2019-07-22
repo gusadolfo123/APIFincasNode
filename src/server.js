@@ -10,7 +10,7 @@ app.set('port', process.env.PORT || 4565);
 app.use(urlencoded({ extended: false }));
 app.use(json()); // para capturar datos que se envian en el cuerpo de un request
 
-//Routes
+//Map Routes
 MapRoutes(app, Router());
 
 export default app;
