@@ -2,5 +2,5 @@
 	"MONGODB_URL": "mongodb://localhost/alquiler",
 	"JWT_KEY": "WinterIsComingGOT2019",
 	"PORT": 4545,
-	"BASE_ADDRESS": "/v1/api/"
+	"BASE_ADDRESS": "/api/v1"
 }
