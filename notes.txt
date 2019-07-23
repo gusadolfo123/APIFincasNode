@@ -21,8 +21,9 @@ crear script en package.json
 en el index.js agregar
 import "@babel/polyfill";
 
+-- Para log
+npm install winston morgan --save
 
 
-
-
-
+https://www.digitalocean.com/community/tutorials/how-to-use-winston-to-log-node-js-applications
+https://stackoverflow.com/questions/51074805/typeerror-winston-logger-is-not-a-constructor-with-winston-and-morgan
