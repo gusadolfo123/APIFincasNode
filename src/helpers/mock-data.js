@@ -61,6 +61,9 @@ mockData.generateData = async (req, res, next) => {
 				},
 			],
 			whatsapp: faker.phone.phoneNumber(),
+			facebook: faker.internet.url(),
+			instagram: faker.internet.url(),
+			twitter: faker.internet.url(),
 			images: [
 				{
 					name: faker.image.nature.name,
