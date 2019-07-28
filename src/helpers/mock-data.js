@@ -3,6 +3,7 @@ import Farm from '../models/farm';
 import Service from '../models/service';
 import Company from '../models/company';
 import Season from '../models/seasons';
+import City from '../models/city';
 
 const mockData = {};
 
@@ -105,14 +106,27 @@ mockData.generateData = async (req, res, next) => {
 
 		const listServices = await Service.find({}).exec();
 
+		let cities = [];
+
+		for (let index = 1; index <= 10; index++) {
+			const newCity = new City({
+				name: faker.address.city(),
+			});
+			await newCity.save();
+			cities.push(newCity);
+		}
+
 		let farms = [];
 
-		for (let index = 0; index < 10; index++) {
+		for (let index = 1; index <= 10; index++) {
 			const newFarm = new Farm({
 				name: faker.company.companyName(),
 				alias: faker.company.companySuffix(),
 				dir: faker.address.secondaryAddress(),
 				description: faker.lorem.sentence(5, 5),
+				type: index % 2 == 0 ? 'campestre' : 'urbana',
+				qualification: index % 2 == 0 ? 5 : 3,
+				city: cities[Math.floor(Math.random() * cities.length)].name,
 				coordinate: {
 					lat: faker.address.latitude(),
 					lon: faker.address.longitude(),

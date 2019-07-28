@@ -29,6 +29,9 @@ const FarmSchema = mongoose.Schema(
 			lowercase: true,
 		},
 		description: String,
+		type: String,
+		qualification: Number,
+		city: String,
 		coordinate: {
 			lat: mongoose.Types.Decimal128,
 			lon: mongoose.Types.Decimal128,
