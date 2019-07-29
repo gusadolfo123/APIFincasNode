@@ -124,7 +124,7 @@ mockData.generateData = async (req, res, next) => {
 				alias: faker.company.companySuffix(),
 				dir: faker.address.secondaryAddress(),
 				description: faker.lorem.sentence(5, 5),
-				type: index % 2 == 0 ? 'campestre' : 'urbana',
+				type: index % 2 == 0 ? 'campestre' : index % 5 == 0 ? 'urbana' : 'condominio',
 				qualification: index % 2 == 0 ? 5 : 3,
 				city: cities[Math.floor(Math.random() * cities.length)].name,
 				coordinate: {
