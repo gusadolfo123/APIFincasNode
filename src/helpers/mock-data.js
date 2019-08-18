@@ -131,6 +131,11 @@ mockData.generateData = async (req, res, next) => {
 					lat: faker.address.latitude(),
 					lon: faker.address.longitude(),
 				},
+				image_card: {
+					name: faker.image.nature.name,
+					url: 'https://picsum.photos/400/400/?image=' + faker.random.number(1084), // faker.image.imageUrl(400, 400, 'nature', true, true),
+					size: 9545493.45,
+				},
 				images: [
 					{
 						name: faker.image.nature.name,

@@ -36,6 +36,7 @@ const FarmSchema = mongoose.Schema(
 			lat: mongoose.Types.Decimal128,
 			lon: mongoose.Types.Decimal128,
 		},
+		image_card: ImageSchema,
 		images: [ImageSchema],
 		prices: {
 			low_season: SeasonSchema,
