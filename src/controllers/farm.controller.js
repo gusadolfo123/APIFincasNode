@@ -5,16 +5,19 @@ import { isNullOrUndefined } from 'util';
 const farmController = {};
 
 farmController.getAll = async (req, res) => {
-	getAllFarms()
-		.then(farms => {
-			const isEmpty = farms.length == 0 ? true : false;
+	const farmsPage = parseInt(req.query.farmsPage) || 3;
+	const currentPage = parseInt(req.query.currentPage) || 1;
+
+	getAllFarms(farmsPage, currentPage)
+		.then(result => {
+			const isEmpty = result.total == 0 ? true : false;
 
 			res.status(200).json(
 				new Response({
 					type: isEmpty ? TypeResult.Warning : TypeResult.Success,
 					isError: false,
 					message: isEmpty ? `No existen registros` : 'Consulta exitosa',
-					object: farms,
+					object: result,
 				}),
 			);
 		})

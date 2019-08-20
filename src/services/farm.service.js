@@ -1,8 +1,18 @@
 import Farm from '../models/farm';
 
-export async function getAllFarms() {
-	const farms = await Farm.find({});
-	return farms;
+export async function getAllFarms(farmsPage, currentPage) {
+	const count = await Farm.countDocuments();
+	const farms = await Farm.find({})
+		.skip(farmsPage * currentPage - farmsPage)
+		.limit(farmsPage)
+		.exec();
+
+	return {
+		farms,
+		current: currentPage,
+		pages: Math.ceil(count / farmsPage),
+		total: count,
+	};
 }
 
 export async function getFarmById(id) {
@@ -27,7 +37,7 @@ export async function deleteFarm(id) {
 }
 
 export async function getFarmsPerPage(page) {
-	const perPage = 2;
+	const perPage = 6;
 	const count = await Farm.countDocuments();
 	const farms = await Farm.find({})
 		.skip(perPage * page - perPage)
